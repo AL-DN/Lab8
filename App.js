@@ -15,9 +15,11 @@ export default function Board() {      // creates function that creates gameboar
   const [squares, setSquares] = useState(Array(9).fill(null));    // makes an array the corresponds to the buttons(used to determine winner) 
 
   function handleClick(i) {
-    if (squares[i]) {   // returns function if button is already filled
+   
+    if (squares[i] || calculateWinner(squares)) { // returns if square is clicked twice and calculates if x/o won
       return;
     }
+
     const nextSquares = squares.slice(); // creates a copy of array
     if (xIsNext) {
       nextSquares[i] = "X";
@@ -27,6 +29,35 @@ export default function Board() {      // creates function that creates gameboar
     setSquares(nextSquares);            // lets ract know the state of the comp has changed
     setXIsNext(!xIsNext);     // this alternates the x's and o's
   }
+
+  function calculateWinner(squares) {
+    const lines = [ //winning combinations
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      [0, 4, 8],
+      [2, 4, 6]
+    ];
+    for (let i = 0; i < lines.length; i++) {
+      const [a, b, c] = lines[i];
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+        return squares[a];
+      }
+    }
+    return null;
+  }
+
+  const winner = calculateWinner(squares);    // states winner to user(s)
+  let status;
+  if (winner) {
+    status = "Winner: " + winner;
+  } else {
+    status = "Next player: " + (xIsNext ? "X" : "O");
+  }
+
 
   return (
       <>
