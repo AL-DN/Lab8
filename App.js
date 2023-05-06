@@ -10,10 +10,8 @@ import { useState } from 'react';
   }
 
 
-export default function Board() {      // creates function that creates gameboard
-  const [xIsNext, setXIsNext] = useState(true);                   // sets first move to x 
-  const [squares, setSquares] = useState(Array(9).fill(null));    // makes an array the corresponds to the buttons(used to determine winner) 
-
+function Board({ xIsNext, squares, onPlay }) {      // creates function that creates gameboard
+  
   function handleClick(i) {
    
     if (squares[i] || calculateWinner(squares)) { // returns if square is clicked twice and calculates if x/o won
@@ -26,8 +24,7 @@ export default function Board() {      // creates function that creates gameboar
     } else {
       nextSquares[i] = "O";
     }
-    setSquares(nextSquares);            // lets ract know the state of the comp has changed
-    setXIsNext(!xIsNext);     // this alternates the x's and o's
+    onPlay(nextSquares);  //updates board when user clicks a square
   }
 
 
@@ -80,4 +77,49 @@ export default function Board() {      // creates function that creates gameboar
       }
     }
     return null;
+  }
+
+  export default function Game() { //top level component / talks to index.js indicated by export default
+    const xIsNext = currentMove % 2 === 0;                  // allows use to use one less state by eval. xIsNext based on current move with respect to x starting game
+    const [history, setHistory] = useState([Array(9).fill(null)]);
+    const [currentMove, setCurrentMove] = useState(0);    // current step user is viewing is 0
+    const currentSquares = history[currentMove]; // renders squaares for current move
+   
+    function handlePlay(nextSquares) {
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+    setHistory(nextHistory);
+    setCurrentMove(nextHistory.length - 1);
+  }
+
+  function jumpTo(nextMove) {
+    setCurrentMove(nextMove);
+  }
+
+  const moves = history.map((squares, move) => {    // .map amkes transforms history into array
+    let description;
+    if (move > 0) {
+      description = 'Go to move #' + move;
+    } else {
+      description = 'Go to game start';
+    }
+    return (
+      <li>
+        <li key={move}></li>
+        <button onClick={() => jumpTo(move)}>{description}</button>
+      </li>
+    );
+  });
+
+   return (
+        <div className="game">
+          <div className="game-board">
+          <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+
+            <Board />
+          </div>
+          <div className="game-info">
+            <ol>{moves}</ol>
+          </div>
+        </div>
+      );
   }
