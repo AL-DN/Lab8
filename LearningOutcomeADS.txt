@@ -1,0 +1,10 @@
+THE LAB IS COMPLETE!
+
+In this lab I was tasked with making a TicTacToe game in React. 
+I learned new built in functions like .slice which makes a copy of an 
+array and .map which makes an array out of an interable which in the games 
+case was history. I learned the index.js is what connects the top level function to 
+run the game. One of the hardest parts was undertanding how the states worked. I also 
+learned how to assemble a UI of buttons used for the game. I also learned how to truly
+create modular code since this game always calls another function. Naming conventions were
+also reinforced. I think this is just a toe dip in the pool for me and plan on making many more web apps!!
